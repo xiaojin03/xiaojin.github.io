@@ -165,6 +165,72 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/04/%E9%99%84%E5%90%88%E6%B0%B4%E5%87%86%E6%B5%8B%E9%87%8F%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xiaojin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/04/%E9%99%84%E5%90%88%E6%B0%B4%E5%87%86%E6%B5%8B%E9%87%8F%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="post-title-link" itemprop="url">附合水准测量小程序</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-04-04 16:48:25 / Modified: 16:50:55" itemprop="dateCreated datePublished" datetime="2020-04-04T16:48:25+08:00">2020-04-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>请设计一个附和水准测量小程序，实现以下功能：</p>
+<p>1、设计水准测量原始数据结构体；</p>
+<p>2、实现原始数据的动态输入，包括：起点、终点已知高程输入，测站个数输入，各测站原始观测数据输入；</p>
+<p>3、计算水准测量闭合差并进行闭合差改正；</p>
+<p>4、输入模拟数据，进行实验验证。</p>
+<p><strong>未完善，暂且实现了输入数据计算出高差的功能。</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">leveling_structure</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> num;</span><br><span class="line">    <span class="built_in">string</span> f_point, b_point;</span><br><span class="line">    <span class="keyword">double</span> f_distance1, b_distance1, f_distance2, b_distance2;</span><br><span class="line">    <span class="keyword">double</span> f_data1, b_data1, f_data2, b_data2;</span><br><span class="line">    <span class="keyword">double</span> line_of_sight;</span><br><span class="line">    <span class="keyword">double</span> height_difference;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">data_input</span><span class="params">(<span class="keyword">unsigned</span> number, leveling_structure&amp; station)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"请输入第"</span> &lt;&lt; number &lt;&lt; <span class="string">"测站的数据："</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    station.num = number;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"输入前视点和后视点："</span> &lt;&lt; ends;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; station.f_point &gt;&gt; station.b_point;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"输入第一次视距读数（前、后）："</span> &lt;&lt; ends;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; station.f_distance1 &gt;&gt; station.b_distance1;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"输入第二次视距读数（前、后）："</span> &lt;&lt; ends;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; station.f_distance2 &gt;&gt; station.b_distance2;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"输入第一次标尺读数（前、后）："</span> &lt;&lt; ends;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; station.f_data1 &gt;&gt; station.b_data1;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"输入第二次标尺读数（前、后）："</span> &lt;&lt; ends;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; station.f_data2 &gt;&gt; station.b_data2;</span><br><span class="line"></span><br><span class="line">    station.line_of_sight = ((station.b_distance1 - station.f_distance1) + (station.b_distance2 - station.f_distance2)) / <span class="number">2</span>;</span><br><span class="line">    station.height_difference = ((station.b_data1 - station.f_data1) + (station.b_data2 - station.f_data2)) / <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">height_print</span><span class="params">(<span class="keyword">double</span> start_data, <span class="keyword">double</span> end_data, <span class="built_in">vector</span>&lt;leveling_structure&gt; station_amount)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"理论高差为："</span> &lt;&lt; end_data - start_data &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> height_amount = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> val : station_amount)</span><br><span class="line">        height_amount += val.height_difference;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"实际高差为："</span> &lt;&lt; height_amount &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> start_data, end_data;</span><br><span class="line">    <span class="keyword">unsigned</span> number;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"请输入起点数据、终点数据及测站数:"</span> &lt;&lt; ends;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; start_data &gt;&gt; end_data &gt;&gt; number;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;leveling_structure&gt; station_amount;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= number; ++i) &#123;</span><br><span class="line">        leveling_structure demo;</span><br><span class="line">        data_input(i, demo);</span><br><span class="line">        station_amount.push_back(demo);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    height_print(start_data, end_data, station_amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/25/%E6%B0%B4%E5%B9%B3%E8%A7%92%E5%92%8C%E7%AB%96%E7%9B%B4%E8%A7%92%E8%AE%A1%E7%AE%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1025,7 +1091,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
