@@ -54,7 +54,7 @@
 <meta property="og:description" content="题目请编写程序，读取星历文件： 1、设计每个历元的文件结构，必须读取历元时刻以及每颗卫星的编号，X Y Z 2、使用动态内存管理方法管理数据 3、文件格式说明：  第一行 年 月 日 时 分 秒（固定长度） 以下各行为各卫星数据，共32卫星  PG01为1号卫星以此类推，前三个数据分别为 X Y Z，后面部分数据可不存储(所有数据均为固定长度)     1234567891011121314151">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-04-23T13:00:32.000Z">
-<meta property="article:modified_time" content="2020-04-23T13:25:20.711Z">
+<meta property="article:modified_time" content="2020-05-06T11:49:15.386Z">
 <meta property="article:author" content="xiaojin">
 <meta property="article:tag" content="测量程序设计">
 <meta name="twitter:card" content="summary">
@@ -192,10 +192,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-04-23 21:00:32 / Modified: 21:25:20" itemprop="dateCreated datePublished" datetime="2020-04-23T21:00:32+08:00">2020-04-23</time>
+              <time title="Created: 2020-04-23 21:00:32" itemprop="dateCreated datePublished" datetime="2020-04-23T21:00:32+08:00">2020-04-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-06 19:49:15" itemprop="dateModified" datetime="2020-05-06T19:49:15+08:00">2020-05-06</time>
+              </span>
 
           
 
@@ -267,6 +273,18 @@
 <p><code>cin.ignore()</code>: 即不带参数；此时默认参数为1.</p>
 </li>
 </ol>
+<h1 id="界面开发"><a href="#界面开发" class="headerlink" title="界面开发"></a>界面开发</h1><p>请为作业3所完成的数据读取软件设计界面，要求如下：</p>
+<p>1、采用MFC对话框形式进行界面设计</p>
+<p>2、对话框中必须包含以下控件：</p>
+<p>  （1）按钮a（打开按钮）：点击按钮可以进行文件路径浏览，选择要打开的文件</p>
+<p>  （2）编辑框：读取完数据后，自动显示在编辑框内，并可由用户进行数据编辑（需要注意：如果显示数据过多，需要添加一个滚动条控件才能完全显示）</p>
+<p>  （3）按钮b（保存按钮）：点击按钮可以进行文件路径浏览，选择要保存的路径及文件名，并将编辑框内数据（可能被修改过的），按照作业3原文件格式进行保存</p>
+<p>打开文件,将文件内容展示在编辑框中</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> CMFCEphemerisDlg::OnBnClickedButtonopen()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="function">CFileDialog <span class="title">opendlg</span><span class="params">(<span class="literal">true</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, (LPCTSTR)_TEXT(<span class="string">"TXT Files (*.txt)|*.txt|All Files (*.*)|*.*||"</span>), <span class="literal">NULL</span>)</span></span>;</span><br><span class="line">	<span class="keyword">if</span> (opendlg.DoModal() == IDOK) &#123; <span class="comment">//显示对话框并允许用户进行选择。</span></span><br><span class="line">		CString filepathname = opendlg.GetPathName(); <span class="comment">//文件路径</span></span><br><span class="line">		CWnd::SetDlgItemTextA(IDC_EDIT2, filepathname); <span class="comment">//在打开路径的编辑框中显示文件路径</span></span><br><span class="line">		CStdioFile file;    </span><br><span class="line">		CString <span class="built_in">line</span>;</span><br><span class="line">		<span class="keyword">if</span> (file.Open(filepathname, CFile::typeText | CFile::modeRead)) <span class="comment">//只读模式打开txt文件</span></span><br><span class="line">		&#123;</span><br><span class="line">			CString m_send;</span><br><span class="line">			<span class="keyword">while</span> (file.ReadString(<span class="built_in">line</span>)) &#123; <span class="comment">//逐行读取文件内容</span></span><br><span class="line">				m_send += <span class="built_in">line</span>;</span><br><span class="line">				m_send += TEXT(<span class="string">"\r\n"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			CWnd::SetDlgItemTextA(IDC_EDIT1, m_send); <span class="comment">//将读取的文本显示在数据编辑的编辑框上</span></span><br><span class="line">			file.Close();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保存文件</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> CMFCEphemerisDlg::OnBnClickedButtonsave()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> Long; <span class="comment">//定义一个整数用于保存编辑框里内容的大小</span></span><br><span class="line">	CString str; <span class="comment">//用于保存编辑框里面的内容</span></span><br><span class="line">	CFile file;</span><br><span class="line">	<span class="function">CFileDialog <span class="title">savedlg</span><span class="params">(<span class="literal">false</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, (LPCTSTR)_TEXT(<span class="string">"TXT Files (*.txt)|*.txt|All Files (*.*)|*.*||"</span>), <span class="literal">NULL</span>)</span></span>;</span><br><span class="line">	<span class="keyword">if</span> (savedlg.DoModal() == IDOK) &#123; <span class="comment">//显示对话框并允许用户进行选择。</span></span><br><span class="line">		CString filepathname = savedlg.GetPathName();</span><br><span class="line">		CWnd::SetDlgItemTextA(IDC_EDIT3, filepathname);</span><br><span class="line">		file.Open(filepathname, CFile::modeCreate | CFile::modeReadWrite); <span class="comment">//打开文档</span></span><br><span class="line">		Long = GetDlgItem(IDC_EDIT1)-&gt;GetWindowTextLength(); <span class="comment">//得到数据编辑框中的内容长度</span></span><br><span class="line">		GetDlgItemText(IDC_EDIT1, str); <span class="comment">//得到数据编辑框中的文本内容</span></span><br><span class="line">		file.Write(str, Long); <span class="comment">//将修改后的内容写入保存路径的文件中</span></span><br><span class="line">		file.Close();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -348,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序代码"><span class="nav-number">2.</span> <span class="nav-text">程序代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#额外知识点"><span class="nav-number">3.</span> <span class="nav-text">额外知识点</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序代码"><span class="nav-number">2.</span> <span class="nav-text">程序代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#额外知识点"><span class="nav-number">3.</span> <span class="nav-text">额外知识点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#界面开发"><span class="nav-number">4.</span> <span class="nav-text">界面开发</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
